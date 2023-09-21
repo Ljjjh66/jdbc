@@ -20,6 +20,13 @@ public class test {
     //处理结果 List<t_member>
     //释放资源
 
+
+    //要是数据库建表中，如果想使成员的信息包含图片，怎么插入怎么存储        workBench txt
+    //如果一个成员有多个身份，比如超人强既可以是技术组，又是节目组         知识：经典五张表
+
+
+
+    //批量查询
     @Test
     public void testall() throws Exception {
 
@@ -71,11 +78,66 @@ public class test {
     }
 
 
+
+    @Test
+    public void testSomeone() throws Exception {
+
+        Properties prop=new Properties();
+
+        prop.load(new FileInputStream("C:\\Users\\Kuzma\\IdeaProjects\\July two\\jdbc-Demo\\src\\druid.properties"));
+
+        DataSource dataSource= DruidDataSourceFactory.createDataSource(prop);
+
+        Connection connection=dataSource.getConnection();
+
+        System.out.println(connection);
+
+        //在此处的SQL中修改查询的对象的c_id即可或者修改where后的表达式查询其他条件的数据
+        String sql="select *from t_member where c_id=1;";
+
+        PreparedStatement pstmt= connection.prepareStatement(sql);
+
+        ResultSet rs= pstmt.executeQuery();
+
+        List<Work> works=new ArrayList<>();
+
+        Work work=null;
+
+        while(rs.next()) {
+            int id = rs.getInt("c_id");
+            String name = rs.getString("c_name");
+            String stuid = rs.getString("c_stu_id");
+            String post = rs.getString("c_post");
+            String grade = rs.getString("c_grade");
+            String college = rs.getString("c_college");
+            String time = rs.getString("c_entrytime");
+
+            work = new Work();
+            work.setcId(id);
+            work.setcName(name);
+            work.setcStuId(stuid);
+            work.setcPost(post);
+            work.setcGrade(grade);
+            work.setC_college(college);
+            work.setC_entrytime(time);
+            works.add(work);
+
+        }
+        System.out.println(works);
+        rs.close();
+        pstmt.close();
+        connection.close();
+
+    }
+
+
+    //添加
     @Test
     public void testadd() throws Exception {
 
+        //此处不用添加c_id 因为设置了c_id那列为主键且递增
         String cName ="功夫熊猫";
-        String cStuid ="2022441212191";
+        String cStuid ="2022741212191";
         String cPost ="技术组UI开发";
         String cGrade ="2021级";
         String cCollege ="计算机学院计科2班";
@@ -117,8 +179,12 @@ public class test {
     }
 
 
+
+    //更新
     @Test
     public void testUpdate() throws Exception {
+
+        //此处以c_id来作为更新对象的标志
         int cId=7;
         String cName ="村长";
         String cStuid ="2022441212111";
@@ -161,16 +227,20 @@ public class test {
         int count= pstmt.executeUpdate();
 
         //处理结果
-        System.out.println(count>0);
+        if (count>0)
+        System.out.println("数据更新成功");
+        else System.out.println("数据更新失败");
 
         pstmt.close();
         connection.close();
 
     }
 
+
+    //删除
     @Test
     public void testDeleteById() throws Exception {
-        int cId=7;
+        int cId=6;
 
         Properties prop=new Properties();
 
@@ -192,7 +262,9 @@ public class test {
         int count= pstmt.executeUpdate();
 
         //处理结果
-        System.out.println(count>0);
+        if (count>0)
+            System.out.println("数据删除成功");
+        else System.out.println("数据删除失败");
 
         pstmt.close();
         connection.close();

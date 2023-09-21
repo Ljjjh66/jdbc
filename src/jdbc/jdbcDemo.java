@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
+//一些熟悉工作
+
 public class jdbcDemo {
     public static void main(String[] args) throws Exception {
         //注册驱动
